@@ -1,0 +1,6 @@
+# Build folder
+src/build/*
+
+# pycache folder
+tests/unit/__pycache__/
+hello_world/__pycache__/
