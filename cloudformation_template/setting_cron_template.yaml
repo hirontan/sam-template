@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  template setting cron
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "HelloWorld"
+      CodeUri: src/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt HelloWorldIamRole.Arn
+
+  HelloWorldEvent:
+    Type: AWS::Events::Rule
+    Properties:
+        Description: 'HelloWorld schedule event'
+        ScheduleExpression: "cron(0 * * * ? *)"
+        State: ENABLED
+        Targets:
+          - Arn: !GetAtt HelloWorldFunction.Arn
+            Id: HelloWorldScheduleEventTarget
+
+  HelloWorldInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref HelloWorldFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt HelloWorldScheduleEvent.Arn
+
+  HelloWorldIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "hello_world"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "cloudwatch:*"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "arn:aws:logs:ap-northeast-1:*:*"
+              - Effect: Allow
+                Action: "ses:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "ec2:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "cloudformation:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "lambda:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "s3:*"
+                Resource:
+                  - "arn:aws:s3:::*"
+              - Effect: Allow
+                Action: "events:*"
+                Resource: "*"
