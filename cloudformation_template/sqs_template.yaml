@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sqs template
+  [queue name]: hello_world
+
+Globals:
+  Function:
+    Timeout: 300
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "HelloWorld"
+      CodeUri: src/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Role: !GetAtt HelloWorldIamRole.Arn
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Environment:
+        Variables:
+          SQS_URL: None
+          SQS_REGION: None
+      Events:
+        HelloWorldSqsEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt HelloWorldSqsQueue.Arn
+            BatchSize: 1
+
+  HelloWorldSqsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: "magicprice_collision_charge_detail_search_platform_for_soraid_rotation"
+      VisibilityTimeout: 300
+
+  HelloWorldSqsQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Id: !Ref HelloWorldSqsQueue
+        Statement:
+          - Sid: QueuePolicy-HelloWorldSqsQueue
+            Effect: Allow
+            Principal: "*"
+            Action: "SQS:*"
+            Resource:
+              Fn::GetAtt:
+              - HelloWorldSqsQueue
+              - Arn
+      Queues:
+        - !Ref HelloWorldSqsQueue
+
+  HelloWorldIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "sqs_template_for_lambda"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "cloudwatch:*"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "arn:aws:logs:ap-northeast-1:*:*"
+              - Effect: Allow
+                Action: "ses:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "ec2:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "cloudformation:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "lambda:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "sqs:*"
+                Resource: "arn:aws:sqs:::hello_world/*"
