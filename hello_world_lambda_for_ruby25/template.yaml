@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  sam-app
+  hello_world_lambda_for_ruby25
 
-  Sample SAM Template for sam-app
+  Sample SAM Template for hello_world_lambda_for_ruby25
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
