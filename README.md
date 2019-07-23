@@ -15,7 +15,8 @@ SAMでローカル開発をし、本番環境（AWS）にデプロイまでの�
 │   ├── python37_template.yaml：Python3.7実行環境
 │   ├── setting_cron_template.yaml：Cron（CloudWatch Events）をトリガーにする設定
 │   └── sqs_template.yaml：SQSをトリガーにする設定
-└── hello_world_lambda_for_ruby25：Ruby2.5でHelloWorld実行してます
+├── connect_network_between_sam_and_localstack：LocalStackとSAMをネットワーク連携してHelloWorld実行してます
+├── hello_world_lambda_for_ruby25：Ruby2.5でHelloWorld実行してます
 └── hello_world_lambda_for_python37：Python3.7でHelloWorld実行してます
 ```
 
