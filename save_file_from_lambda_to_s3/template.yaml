@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  save_file_from_lambda_to_s3
+
+  Sample SAM Template for save_file_from_lambda_to_s3
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  SaveFileFromLambdaToS3Function:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: SaveFileFromLambdaToS3
+      CodeUri: save_file_from_lambda_to_s3/
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Environment:
+        Variables:
+          S3_URL: None
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  SaveFileFromLambdaToS3Function:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt SaveFileFromLambdaToS3Function.Arn
+  SaveFileFromLambdaToS3FunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt SaveFileFromLambdaToS3FunctionRole.Arn

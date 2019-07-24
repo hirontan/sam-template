@@ -1,5 +1,6 @@
 S3BUCKET := test_bucket
 $(eval NAME := $(shell basename `pwd`))
+STACKNAME := ConnectNetworkBetweenSAMAndLocalStack
 
 start-platform:
 	docker-compose up -d
@@ -17,7 +18,7 @@ invoke: network
 	sam local invoke -t template.yaml --docker-network $(NETWORK) -e event.json
 
 start-api: network
-	sam local start-api -t template --docker-network $(NETWORK)
+	sam local start-api -t template.yaml --docker-network $(NETWORK)
 
 test:
 	bundle install --path tests/unit/build/
@@ -27,4 +28,4 @@ package:
 	aws cloudformation package --template-file template.yaml --output-template-file packaged-template.yaml --s3-bucket $(S3BUCKET) --s3-prefix $(NAME)
 
 deploy:
-	aws cloudformation deploy --template-file packaged-template.yaml --stack-name $(NAME) --capabilities CAPABILITY_IAM
+	aws cloudformation deploy --template-file packaged-template.yaml --stack-name $(STACKNAME) --capabilities CAPABILITY_IAM
