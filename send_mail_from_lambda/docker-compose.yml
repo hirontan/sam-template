@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4579:4579"
+      - "8080:8080"
+    environment:
+      - SERVICES=ses
