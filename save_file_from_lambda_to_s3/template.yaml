@@ -8,7 +8,13 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 30
+    Timeout: 3
+
+Mappings:
+  prod:
+    Bucket: { Name: prod_bucket }
+  dev:
+    Bucket: { Name: test_bucket }
 
 Resources:
   SaveFileFromLambdaToS3Function:
@@ -20,7 +26,24 @@ Resources:
       Runtime: ruby2.5
       Environment:
         Variables:
-          S3_URL: None
+          Env: !Ref Env
+          S3_URL: !Ref S3URL
+          BucketName: !Ref BucketName
+
+Parameters:
+  # prod：本番環境 dev：開発環境（ローカル）
+  Env:
+    Type: String
+    AllowedValues:
+      - prod
+      - dev
+    Default: dev
+  S3_URL:
+    Type: String
+    Default: None
+  BucketName:
+    Type: String
+    Default: test_bucket
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
