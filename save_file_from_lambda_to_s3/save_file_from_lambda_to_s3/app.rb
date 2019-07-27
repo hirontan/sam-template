@@ -4,7 +4,7 @@ require 'aws-sdk-s3'
 require 'json'
 
 def lambda_handler(event:, context:)
-  bucket = 'test_bucket'
+  bucket = ENV['BucketName']
   filename = 's3test.json'
 
   put_content(filename, bucket)
@@ -32,7 +32,7 @@ def construct_s3_client()
 end
 
 def set_config()
-  if ENV['S3_URL'] == 'None'
+  if ENV['Env'] == 'prod'
     {
       region: ENV['AWS_REGION'],
       access_key_id: ENV['AWS_ACCESS_KEY_ID'],

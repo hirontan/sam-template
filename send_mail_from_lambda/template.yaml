@@ -20,9 +20,19 @@ Resources:
       Runtime: ruby2.5
       Environment:
         Variables:
+          Env: !Ref Env
           SES_URL: None
           TO_ADDRESSES: None
           FROM_ADDRESS: None
+
+Parameters:
+  # prod：本番環境 dev：開発環境（ローカル）
+  Env:
+    Type: String
+    AllowedValues:
+      - prod
+      - dev
+    Default: dev
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

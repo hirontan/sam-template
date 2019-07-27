@@ -16,7 +16,7 @@ def construct_ses_client()
 end
 
 def set_config()
-  if ENV['SES_URL'] == 'None'
+  if ENV['Env'] == 'prod'
     {
       region: ENV['AWS_REGION'],
       access_key_id: ENV['AWS_ACCESS_KEY_ID'],
