@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  runs_triggered_by_sqs
+
+  Sample SAM Template for runs_triggered_by_sqs
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  RunsTriggeredBySQSFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: RunsTriggeredBySQS
+      CodeUri: runs_triggered_by_sqs/
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Role: !GetAtt RunsTriggeredBySQSFunctionIamRole.Arn
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Environment:
+        Variables:
+          Env: !Ref Env
+          SQS_URL: !Ref SQS_URL
+          SQS_REGION: !Ref SQS_REGION
+          QueueName: !Ref QueueName
+      Events:
+        RunsTriggeredBySQSSqsEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt RunsTriggeredBySQSSqsQueue.Arn
+            BatchSize: 1
+  RunsTriggeredBySQSSqsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      VisibilityTimeout: 900
+
+  RunsTriggeredBySQSSqsQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Id: !Ref RunsTriggeredBySQSSqsQueue
+        Statement:
+          - Sid: QueuePolicy-RunsTriggeredBySQSSqsQueue
+            Effect: Allow
+            Principal: "*"
+            Action: "SQS:*"
+            Resource:
+              Fn::GetAtt:
+              - RunsTriggeredBySQSSqsQueue
+              - Arn
+      Queues:
+        - !Ref RunsTriggeredBySQSSqsQueue
+
+Parameters:
+  # prod：本番環境 dev：開発環境（ローカル）
+  Env:
+    Type: String
+    AllowedValues:
+      - prod
+      - dev
+    Default: dev
+  SQS_URL:
+    Type: String
+    Default: None
+  SQS_REGION:
+    Type: String
+    Default: None
+  QueueName:
+    Type: String
+    Default: test_queue
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  RunsTriggeredBySQSFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt RunsTriggeredBySQSFunction.Arn
+  RunsTriggeredBySQSFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt RunsTriggeredBySQSFunctionRole.Arn
