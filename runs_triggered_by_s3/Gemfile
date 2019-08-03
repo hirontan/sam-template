@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gem 'aws-sdk-s3'
+
+group :test do
+  gem 'httparty'
+  gem "test-unit"
+  gem "mocha"
+end
