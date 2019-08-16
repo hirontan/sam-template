@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  scraping_from_lambda
+
+  Sample SAM Template for scraping_from_lambda
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  ScrapingFromLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ScrapingFromLambda
+      CodeUri: scraping_from_lambda/
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Role: !GetAtt ScrapingFromLambdaFunctionIamRole.Arn
+      MemorySize: 128
+      ReservedConcurrentExecutions: 3
+      Environment:
+        Variables:
+          Env: !Ref Env
+          S3_URL: !Ref S3_URL
+          S3_REGION: !Ref S3_REGION
+          BucketName: !Ref BucketName
+          SCRAPING_URL: !Ref SCRAPING_URL
+      Events:
+        ScrapingFromLambdaEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref BucketName
+            Events: s3:ObjectCreated:*
+
+Parameters:
+  # prod：本番環境 dev：開発環境（ローカル）
+  Env:
+    Type: String
+    AllowedValues:
+      - prod
+      - dev
+    Default: dev
+  S3_URL:
+    Type: String
+    Default: None
+  S3_REGION:
+    Type: String
+    Default: None
+  BucketName:
+    Type: String
+    Default: test_bucket
+  SCRAPING_URL:
+    Type: String
+    Default: 
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  ScrapingFromLambdaFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt ScrapingFromLambdaFunction.Arn
+  ScrapingFromLambdaFunctionIamRole:
+    Description: "Implicit IAM Role created for function"
+    Value: !GetAtt ScrapingFromLambdaFunctionRole.Arn
