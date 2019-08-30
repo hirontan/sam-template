@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  scraping_using_headless_chrome_from_lambda
+
+  Sample SAM Template for scraping_using_headless_chrome_from_lambda
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  ScrapingUsingHeadlessChromeFromLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ScrapingUsingHeadlessChromeFromLambda
+      CodeUri: scraping_using_headless_chrome_from_lambda/
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Role: !GetAtt ScrapingUsingHeadlessChromeFromLambdaFunctionIamRole.Arn
+      MemorySize: 756
+      ReservedConcurrentExecutions: 3
+      Environment:
+        Variables:
+          Env: !Ref Env
+          SCRAPING_URL: !Ref SCRAPING_URL
+      Layers:
+        # - !Ref CommonLayer
+        - !Ref BinLayer
+        - !Ref GemsLayer
+
+  BinLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: ruby-serverless-chrome-bin
+      Description: Bin Resource Layer
+      ContentUri: ruby-serverless-chrome-bin
+
+  GemsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: ruby-serverless-chrome-gems
+      Description: Gems Resource Layer
+      ContentUri: ruby-serverless-chrome-gems
+
+  # CommonLayer:
+  #   Type: AWS::Serverless::LayerVersion
+  #   Properties:
+  #     LayerName: ruby-common-layer
+  #     Description: CommonLayer
+  #     ContentUri: layer
+
+Parameters:
+  # prod：本番環境 dev：開発環境（ローカル）
+  Env:
+    Type: String
+    AllowedValues:
+      - prod
+      - dev
+    Default: dev
+  SCRAPING_URL:
+    Type: String
+    Default: 
+
+Outputs:
+  ScrapingUsingHeadlessChromeFromLambdaFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt ScrapingUsingHeadlessChromeFromLambdaFunction.Arn
+  ScrapingUsingHeadlessChromeFromLambdaFunctionIamRole:
+    Description: "Implicit IAM Role created for function"
+    Value: !GetAtt ScrapingUsingHeadlessChromeFromLambdaFunctionRole.Arn
