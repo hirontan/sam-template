@@ -1,0 +1,12 @@
+source "https://rubygems.org"
+
+gem "selenium-webdriver"
+gem "webdrivers"
+gem "childprocess"
+gem "nokogiri"
+
+group :test do
+  gem 'httparty'
+  gem "test-unit"
+  gem "mocha"
+end
