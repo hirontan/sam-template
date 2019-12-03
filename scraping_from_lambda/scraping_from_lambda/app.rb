@@ -10,7 +10,7 @@ def lambda_handler(event:, context:)
   bucket_name = ENV['BucketName']
   event['Records'].each do |record|
     raise "using bucket different." if record['s3']['bucket']['name'] != bucket_name
-    
+
     content = get_content(record['s3']['object']['key'], bucket_name)
     charset = 'utf-8'
     body = JSON.parse(content.body.read)
@@ -72,7 +72,8 @@ def set_config()
     }
   else
     {
-      endpoint: ENV['S3_URL']
+      endpoint: ENV['S3_URL'],
+      force_path_style: true
     }
   end
 end

@@ -28,12 +28,62 @@ Resources:
           S3_REGION: !Ref S3_REGION
           BucketName: !Ref BucketName
           SCRAPING_URL: !Ref SCRAPING_URL
+      Layers:
+        - !Ref GemsLayer
       Events:
         ScrapingFromLambdaEvent:
           Type: S3
           Properties:
             Bucket: !Ref BucketName
             Events: s3:ObjectCreated:*
+
+  GemsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: ruby-serverless-crawling-gems-only-for-scraping_from_lambda
+      Description: Gems Resource Layer
+      ContentUri: ./ruby-serverless-crawling-gems
+
+  ScrapingFromLambdaIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "scraping_from_lambda_policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "cloudwatch:*"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "arn:aws:logs:ap-northeast-1:*:*"
+              - Effect: Allow
+                Action: "ses:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "ec2:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "cloudformation:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "lambda:*"
+                Resource: "*"
+              - Effect: Allow
+                Action: "s3:*"
+                Resource:
+                  - "arn:aws:s3:::test-bucket/*"
 
 Parameters:
   # prod：本番環境 dev：開発環境（ローカル）
@@ -51,18 +101,8 @@ Parameters:
     Default: None
   BucketName:
     Type: String
-    Default: test_bucket
+    Default: test-bucket
   SCRAPING_URL:
     Type: String
     Default: 
 
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  ScrapingFromLambdaFunction:
-    Description: "Lambda Function ARN"
-    Value: !GetAtt ScrapingFromLambdaFunction.Arn
-  ScrapingFromLambdaFunctionIamRole:
-    Description: "Implicit IAM Role created for function"
-    Value: !GetAtt ScrapingFromLambdaFunctionRole.Arn

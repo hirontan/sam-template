@@ -241,4 +241,10 @@ $RECYCLE.BIN/
 
 */build/*
 
+# Layers
+ruby-serverless-crawling-gems
+
+# test.json
+test.json
+
 # End of https://www.gitignore.io/api/osx,linux,python,windows,pycharm,visualstudiocode
