@@ -1,0 +1,6 @@
+FROM lambci/lambda:build-ruby2.5
+
+ADD layers/gemfiles/Gemfile_ruby-serverless-crawling-gems /var/task/Gemfile
+ADD layers/gemfiles/Gemfile_ruby-serverless-crawling-gems.lock /var/task/Gemfile.lock
+
+RUN bundle install --without development test --deployment

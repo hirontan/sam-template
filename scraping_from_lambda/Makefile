@@ -1,4 +1,4 @@
-BUCKETNAME := test_bucket
+BUCKETNAME := test-bucket
 $(eval NAME := $(shell basename `pwd`))
 STACKNAME := ScrapingFromLambda
 
@@ -23,14 +23,15 @@ generate-env:
 create-event:
 	echo '{ "id": "1", "url": "$(SCRAPING_URL)" }' > ./test.json
 
-install-pkgs:
-	bundle install --gemfile $(NAME)/Gemfile --path build
+# install-pkgs:
+#	bundle install --gemfile $(NAME)/Gemfile --path build
 
-build: network
-	sam build --use-container --parameter-overrides ParameterKey=Env,ParameterValue=dev -t template.yaml --docker-network $(NETWORK)
+# build: network
+#	sam build --use-container --parameter-overrides ParameterKey=Env,ParameterValue=dev -t template.yaml --docker-network $(NETWORK)
 
 invoke: network
-	sam local invoke $(STACKNAME)Function --parameter-overrides ParameterKey=Env,ParameterValue=dev --env-vars env.json --docker-network $(NETWORK) --event event.json
+	# sam local invoke $(STACKNAME)Function --parameter-overrides ParameterKey=Env,ParameterValue=dev --env-vars env.json --docker-network $(NETWORK) --event event.json
+	sam local invoke -t template.yaml --parameter-overrides ParameterKey=Env,ParameterValue=dev --env-vars env.json --docker-network $(NETWORK) --event event.json
 
 init: start-platform generate-env install-pkgs invoke
 
@@ -42,7 +43,10 @@ test:
 	ruby tests/unit/test_handler.rb
 
 package:
-	aws cloudformation package --template-file template.yaml --output-template-file packaged-template.yaml --parameter-overrides Env=prod --s3-bucket $(S3BUCKET) --s3-prefix $(NAME)
+	aws cloudformation package --template-file template.yaml --output-template-file packaged-template.yaml --parameter-overrides Env=prod --s3-bucket $(BUCKETNAME) --s3-prefix $(NAME)
 
 deploy:
 	aws cloudformation deploy --template-file packaged-template.yaml --stack-name $(STACKNAME) --capabilities CAPABILITY_IAM --parameter-overrides Env=prod
+
+build-ruby-serverless-crawling-gems:
+	bash layers/builds/build_ruby-serverless-crawling-gems.sh

@@ -18,6 +18,7 @@ SAMでローカル開発をし、本番環境（AWS）にデプロイまでの�
 ├── connect_network_between_sam_and_localstack：LocalStackとSAMをネットワーク連携してHelloWorld実行してます
 ├── hello_world_lambda_for_python37：Python3.7でHelloWorld実行してます
 ├── hello_world_lambda_for_ruby25：Ruby2.5でHelloWorld実行してます
+└── scraping_from_lambda：特定URLをクローリングし、タイトルをスクレイピングする
 └── save_file_from_lambda_to_s3：LocalStackで構築されたS3にファイルを保存し、保存したファイルを読み込みしています
 ```
 
