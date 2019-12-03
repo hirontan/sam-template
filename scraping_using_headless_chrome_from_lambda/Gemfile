@@ -4,6 +4,7 @@ gem "selenium-webdriver"
 gem "webdrivers"
 gem "childprocess"
 gem "nokogiri"
+gem "rubyzip", "~> 1.3.0"
 
 group :test do
   gem 'httparty'
