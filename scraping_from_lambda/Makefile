@@ -5,14 +5,11 @@ STACKNAME := ScrapingFromLambda
 # 実行時は、`make start-platform SCRAPING_URL=xxxxxxxxxxx`
 start-platform: create-event
 	docker-compose up -d
-	PATH=$(PATH) aws --endpoint-url=http://localhost:4572 s3api create-bucket --bucket $(BUCKETNAME)
-	PATH=$(PATH) aws --endpoint-url=http://localhost:4572 s3 cp test.json s3://$(BUCKETNAME)/$(NAME)/
+	aws --endpoint-url=http://localhost:4572 s3api create-bucket --bucket $(BUCKETNAME)
+	aws --endpoint-url=http://localhost:4572 s3 cp test.json s3://$(BUCKETNAME)/$(NAME)/
 
 stop-platform:
 	docker-compose down
-
-network:
-	$(eval NETWORK := $(shell docker network ls | grep $(NAME) | cut -f 1 -d ' '))
 
 generate-env:
 	$(eval LOCALSTACK_ID := $(shell docker ps | grep $(NAME)_localstack | cut -f 1 -d ' '))
@@ -23,14 +20,10 @@ generate-env:
 create-event:
 	echo '{ "id": "1", "url": "$(SCRAPING_URL)" }' > ./test.json
 
-# install-pkgs:
-#	bundle install --gemfile $(NAME)/Gemfile --path build
-
-# build: network
-#	sam build --use-container --parameter-overrides ParameterKey=Env,ParameterValue=dev -t template.yaml --docker-network $(NETWORK)
+network:
+	$(eval NETWORK := $(shell docker network ls | grep $(NAME) | cut -f 1 -d ' '))
 
 invoke: network
-	# sam local invoke $(STACKNAME)Function --parameter-overrides ParameterKey=Env,ParameterValue=dev --env-vars env.json --docker-network $(NETWORK) --event event.json
 	sam local invoke -t template.yaml --parameter-overrides ParameterKey=Env,ParameterValue=dev --env-vars env.json --docker-network $(NETWORK) --event event.json
 
 init: start-platform generate-env install-pkgs invoke
