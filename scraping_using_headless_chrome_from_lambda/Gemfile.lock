@@ -11,7 +11,7 @@ GEM
     mini_portile2 (2.8.0)
     mocha (1.10.0)
     multi_xml (0.6.0)
-    nokogiri (1.13.2)
+    nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     power_assert (1.1.5)
