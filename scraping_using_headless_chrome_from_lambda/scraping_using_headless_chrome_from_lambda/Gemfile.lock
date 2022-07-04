@@ -17,7 +17,7 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.1.0)
       aws-eventstream (~> 1.0, >= 1.0.2)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     mini_portile2 (2.8.0)
     nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
