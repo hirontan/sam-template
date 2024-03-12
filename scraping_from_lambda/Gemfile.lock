@@ -26,10 +26,10 @@ GEM
     mocha (1.9.0)
       metaclass (~> 0.0.1)
     multi_xml (0.6.0)
-    nokogiri (1.14.3-x86_64-linux)
+    nokogiri (1.16.2-x86_64-linux)
       racc (~> 1.4)
     power_assert (1.1.4)
-    racc (1.6.2)
+    racc (1.7.3)
     robotex (1.0.0)
     test-unit (3.3.3)
       power_assert
