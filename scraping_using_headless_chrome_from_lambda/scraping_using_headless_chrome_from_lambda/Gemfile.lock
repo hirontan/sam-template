@@ -18,11 +18,11 @@ GEM
     aws-sigv4 (1.1.0)
       aws-eventstream (~> 1.0, >= 1.0.2)
     jmespath (1.6.1)
-    mini_portile2 (2.8.6)
-    nokogiri (1.16.5)
+    mini_portile2 (2.8.8)
+    nokogiri (1.18.3)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    racc (1.7.3)
+    racc (1.8.1)
     robotex (1.0.0)
 
 PLATFORMS
